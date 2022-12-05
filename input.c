@@ -613,6 +613,7 @@ static bool input_shouldReadNewFile(run_t* run) {
     if (!run->staticFileTryMore) {
         run->staticFileTryMore = true;
         /* Start with 4 bytes, increase the size in following iterations */
+		/*从4个字节开始，在接下来的迭代中增加大小*/
         input_setSize(run, HF_MIN(4U, run->global->mutate.maxInputSz));
         return true;
     }

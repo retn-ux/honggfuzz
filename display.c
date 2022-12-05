@@ -255,6 +255,7 @@ static void getDuration(time_t elapsed_second, char* buf, size_t bufSz) {
     snprintf(buf, bufSz, "%u days %02u hrs %02u mins %02u secs", day, hour, min, second);
 }
 
+//设置honggfuzz控制台中的进程命令行
 void display_createTargetStr(honggfuzz_t* hfuzz) {
     if (!hfuzz->exe.cmdline[0]) {
         LOG_W("Your fuzzed binary is not specified");

@@ -78,12 +78,13 @@ static bool cmdlineCheckBinaryType(honggfuzz_t* hfuzz) {
         }
         close(fd);
     };
-
+	//在映射内存中查找Persistent标志
     if (memmem(map, fileSz, _HF_PERSISTENT_SIG, strlen(_HF_PERSISTENT_SIG))) {
         LOG_I("Persistent signature found in '%s'. Enabling persistent fuzzing mode",
             hfuzz->exe.cmdline[0]);
         hfuzz->exe.persistent = true;
     }
+	//查找NetDriver的二进制签名
     if (memmem(map, fileSz, _HF_NETDRIVER_SIG, strlen(_HF_NETDRIVER_SIG))) {
         LOG_I("NetDriver signature found '%s'", hfuzz->exe.cmdline[0]);
         hfuzz->exe.netDriver = true;
@@ -586,19 +587,19 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                 hfuzz->feedback.dynFileMethod = _HF_DYNFILE_NONE;
                 break;
             case 'Q':
-                hfuzz->exe.nullifyStdio = false;
+                hfuzz->exe.nullifyStdio = false;		//不要关闭子程序的stdin, stdout, stderr
                 break;
             case 'v':
-                hfuzz->display.useScreen = false;
+                hfuzz->display.useScreen = false;		//禁用ANSI控制台;使用简单的日志输出
                 break;
             case 'V':
-                hfuzz->cfg.useVerifier = true;
+                hfuzz->cfg.useVerifier = true;			//开启崩溃验证器
                 break;
             case 's':
-                hfuzz->exe.fuzzStdin = true;
+                hfuzz->exe.fuzzStdin = true;			//在STDIN上提供模糊输入，而不是_HF_FILE_PLACEHOLDER,即___FILE___
                 break;
             case 'u':
-                hfuzz->io.saveUnique = false;
+                hfuzz->io.saveUnique = false;		
                 break;
             case 'U':
                 hfuzz->io.saveSmaller = true;
@@ -634,14 +635,14 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                 hfuzz->exe.externalCommand = optarg;
                 break;
             case 'S':
-                hfuzz->sanitizer.enable = true;
+                hfuzz->sanitizer.enable = true;			
                 break;
             case 0x10F:
                 hfuzz->sanitizer.del_report = cmdlineParseTrueFalse(opts[opt_index].name, optarg);
                 break;
             case 0x10B:
                 hfuzz->socketFuzzer.enabled = true;
-                hfuzz->timing.tmOut         = 0; /* Disable process timeout checks */
+                hfuzz->timing.tmOut         = 0; /* Disable process timeout checks 禁用进程超时检查*/
                 break;
             case 0x10C:
                 hfuzz->exe.netDriver = true;
@@ -781,10 +782,10 @@ bool cmdlineParse(int argc, char* argv[], honggfuzz_t* hfuzz) {
                     hfuzz->arch_linux.cloneFlags |= (CLONE_NEWUSER | CLONE_NEWNET);
                 }
                 break;
-            case 0x531:
+            case 0x531:					//使用Linux PID 命名空间隔离
                 hfuzz->arch_linux.cloneFlags |= (CLONE_NEWUSER | CLONE_NEWPID);
-                break;
-            case 0x532:
+                break;	
+            case 0x532:					//使用Linux IPC命名空间隔离
                 hfuzz->arch_linux.cloneFlags |= (CLONE_NEWUSER | CLONE_NEWIPC);
                 break;
 #endif /* defined(_HF_ARCH_LINUX) */

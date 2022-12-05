@@ -281,7 +281,8 @@ size_t files_parseSymbolFilter(const char* srcFile, char*** filterList) {
     return symbolsRead;
 }
 
-uint8_t* files_mapFile(const char* fname, off_t* fileSz, int* fd, bool isWritable) {
+//将文件映射到内存
+uint8_t* files_mapFile(const char* fname, off_t* fileSz, int* fd, bool isWritable) {	
     int mmapProt = PROT_READ;
     if (isWritable) {
         mmapProt |= PROT_WRITE;

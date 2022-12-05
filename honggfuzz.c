@@ -336,10 +336,10 @@ int main(int argc, char** argv) {
         PLOG_F("Output directory '%s' is not writeable", hfuzz.io.outputDir);
     }
     if (hfuzz.cfg.minimize) {
-        LOG_I("Minimization mode enabled. Setting number of threads to 1");
+        LOG_I("Minimization mode enabled. Setting number of threads to 1");	//最小化模式启用。设置线程数为1
         hfuzz.threads.threadsMax = 1;
     }
-
+	
     char tmstr[64];
     util_getLocalTime("%F.%H.%M.%S", tmstr, sizeof(tmstr), time(NULL));
     LOG_I("Start time:'%s' bin:'%s', input:'%s', output:'%s', persistent:%s, stdin:%s, "
@@ -353,15 +353,15 @@ int main(int argc, char** argv) {
     sigemptyset(&hfuzz.exe.waitSigSet);
     sigaddset(&hfuzz.exe.waitSigSet, SIGIO);   /* Persistent socket data */
     sigaddset(&hfuzz.exe.waitSigSet, SIGCHLD); /* Ping from the signal thread */
-
+	
     if (hfuzz.display.useScreen) {
         display_init();
     }
 
     if (hfuzz.socketFuzzer.enabled) {
         LOG_I("No input file corpus loaded, the external socket_fuzzer is responsible for "
-              "creating the fuzz data");
-        setupSocketFuzzer(&hfuzz);
+              "creating the fuzz data");	//没有加载输入文件语料库，外部socket_fuzzer负责创建模糊数据
+        setupSocketFuzzer(&hfuzz);			//使用本地套接字
     } else if (!input_init(&hfuzz)) {
         LOG_F("Couldn't load input corpus");
         exit(EXIT_FAILURE);

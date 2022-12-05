@@ -177,7 +177,7 @@ bool util_PinThreadToCPUs(uint32_t threadno, uint32_t cpucnt) {
     return false;
 }
 
-void* util_Malloc(size_t sz) {
+void* util_Malloc(size_t sz) {//malloc
     void* p = malloc(sz);
     if (p == NULL) {
         LOG_F("malloc(size='%zu')", sz);
@@ -185,7 +185,7 @@ void* util_Malloc(size_t sz) {
     return p;
 }
 
-void* util_Calloc(size_t sz) {
+void* util_Calloc(size_t sz) {//calloc
     void* p = util_Malloc(sz);
     memset(p, '\0', sz);
     return p;

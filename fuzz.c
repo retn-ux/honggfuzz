@@ -470,6 +470,7 @@ static void fuzz_fuzzLoopSocket(run_t* run) {
     report_saveReport(run);
 }
 
+//fuzz主线程
 static void* fuzz_threadNew(void* arg) {
     honggfuzz_t* hfuzz  = (honggfuzz_t*)arg;
     unsigned int fuzzNo = ATOMIC_POST_INC(hfuzz->threads.threadsActiveCnt);

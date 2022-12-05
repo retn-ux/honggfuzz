@@ -65,7 +65,7 @@ static void report_printTargetCmd(run_t* run) {
     dprintf(reportFD, "\n");
 }
 
-void report_saveReport(run_t* run) {
+void (run_t* run) {
     if (run->report[0] == '\0') {
         return;
     }
