@@ -91,16 +91,21 @@ static void sigHandler(int sig) {
 
     ATOMIC_SET(sigReceived, sig);
 }
-
+//
+//@brief:设置最大能打开的文件数
+//
 static void setupRLimits(void) {
     struct rlimit rlim;
+	//获取最大能打开的文件数
     if (getrlimit(RLIMIT_NOFILE, &rlim) == -1) {
         PLOG_W("getrlimit(RLIMIT_NOFILE)");
         return;
     }
+	//当前限制大于或等于1024
     if (rlim.rlim_cur >= 1024) {
         return;
     }
+	//最大限制小于1024
     if (rlim.rlim_max < 1024) {
         LOG_E("RLIMIT_NOFILE max limit < 1024 (%zu). Expect troubles!", (size_t)rlim.rlim_max);
         return;
@@ -129,12 +134,16 @@ static void setupMainThreadTimer(void) {
         PLOG_F("setitimer(ITIMER_REAL)");
     }
 }
-
+//
+//@brief:阻塞应该在主线程中处理或阻塞的信号
+//
 static void setupSignalsPreThreads(void) {
-    /* Block signals which should be handled or blocked in the main thread */
-    sigset_t ss;
-    sigemptyset(&ss);
-    sigaddset(&ss, SIGTERM);
+    /* Block signals which should be handled or blocked in the main thread 
+	 * 阻塞应该在主线程中处理或阻塞的信号
+	 */
+    sigset_t ss;				//用于阻塞信号，进程将无法接收到信号集中的信号
+    sigemptyset(&ss);			//将信号集初始化为空。
+    sigaddset(&ss, SIGTERM);	//把信号添加到信号集set中
     sigaddset(&ss, SIGINT);
     sigaddset(&ss, SIGQUIT);
     sigaddset(&ss, SIGALRM);
@@ -145,6 +154,7 @@ static void setupSignalsPreThreads(void) {
     sigaddset(&ss, SIGCHLD);
     /* This is checked for via sigwaitinfo/sigtimedwait */
     sigaddset(&ss, SIGWINCH);
+	//设置进程对应的信号集中的内容，SIG_SETMASK：进程新的信号屏蔽字将被set指向的信号集的值代替
     if (sigprocmask(SIG_SETMASK, &ss, NULL) != 0) {
         PLOG_F("sigprocmask(SIG_SETMASK)");
     }

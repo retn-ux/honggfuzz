@@ -293,12 +293,14 @@ bool arch_archInit(honggfuzz_t* hfuzz) {
     }
 
     for (;;) {
-        /* We need to use clone() to enable CLONE_NEW* flags */
+        /* We need to use clone() to enable CLONE_NEW* flags
+         * 我们需要使用clone()来启用CLONE_NEW*标志
+         */
         if (hfuzz->arch_linux.cloneFlags) {
             hfuzz->arch_linux.useClone = true;
             break;
         }
-
+		//如果是未知的libc/glibc版本则使用clone而不是用fork
         __attribute__((weak)) const char* gnu_get_libc_version(void);
         if (!gnu_get_libc_version) {
             LOG_W("Unknown libc implementation. Using clone() instead of fork()");
@@ -329,7 +331,7 @@ bool arch_archInit(honggfuzz_t* hfuzz) {
 
         /*
          * Check that Linux kernel is compatible
-         *
+         * 
          * Compatibility list:
          *  1) Perf exclude_callchain_kernel requires kernel >= 3.7
          *     TODO: Runtime logic to disable it for unsupported kernels
@@ -340,8 +342,19 @@ bool arch_archInit(honggfuzz_t* hfuzz) {
          *     although small guarantees it's installed. Maybe a more targeted
          *     message at perf_event_open() error handling will help.
          *  3) Intel's PT and new Intel BTS format require kernel >= 4.1
+         *
+         * 检查Linux内核是否兼容
+         * 
+         * 兼容性列表:
+         *	1) Perf exclude_callchain_kernel要求内核>= 3.7
+         *	   TODO: 如果它不影响性能计数器处理，则为不支持的内核禁用它的运行时逻辑
+         *	2) 如果内核不支持“PERF_TYPE_HARDWARE”，则从 perf_event_open() 返回 ENOENT。
+         *	   不幸的是，这里没有可靠的方法来检测它。 
+         *	   libperf 导出了一些列表函数，尽管可以保证它已安装。
+         *	   也许 perf_event_open() 错误处理中更有针对性的消息会有所帮助。
+         *	3) Intel的PT和新的Intel BTS格式要求内核>= 4.1
          */
-        unsigned long checkMajor = 3, checkMinor = 7;
+        unsigned long checkMajor = 3, checkMinor = 7;	//将要检查的kernel版本
         if ((hfuzz->feedback.dynFileMethod & _HF_DYNFILE_BTS_EDGE) ||
             (hfuzz->feedback.dynFileMethod & _HF_DYNFILE_IPT_BLOCK)) {
             checkMajor = 4;

@@ -256,9 +256,9 @@ typedef struct {
         struct {
             uint8_t val[512];
             size_t  len;
-        } dictionary[8192];
-        size_t      dictionaryCnt;
-        const char* dictionaryFile;				//字典文件路径(用于帮助Fuzzer识别语法关键字)
+        } dictionary[8192];						//语法字典结构体
+        size_t      dictionaryCnt;				//语法字典个数
+        const char* dictionaryFile;				//语法字典文件路径(用于帮助Fuzzer识别语法关键字)
         size_t      mutationsMax;				//模糊迭代次数（默认值：0 [无限制]）
         unsigned    mutationsPerRun;			//每次运行的最大突变数（默认值：6）
         size_t      maxInputSz;					//测试文件中最大大小
@@ -324,7 +324,7 @@ typedef struct {
 
     /* For the Linux code */
     struct {
-        int         exeFd;
+        int         exeFd;							//被测程序的文件描述符
         uint64_t    dynamicCutOffAddr;				//忽略 IP 高于此地址的 perf 事件
         bool        disableRandomization;			//是否禁用ASLR随机化，可能对MSAN有用
         void*       ignoreAddr;						//地址限制(来自si.si_addr)低于此限制不报告崩溃，(默认值:0)
@@ -334,10 +334,10 @@ typedef struct {
         const char* symsWlFile;
         char**      symsWl;
         size_t      symsWlCnt;
-        uintptr_t   cloneFlags;
+        uintptr_t   cloneFlags;						//CLONE_NEW*
         tristate_t  useNetNs;						//使用Linux NET命名空间隔离(yes/no/maybe [default:no])
         bool        kernelOnly;						//使用 Intel PT 和 Intel BTS 收集Kernel-Only的覆盖率
-        bool        useClone;
+        bool        useClone;						//是否使用clone()
     } arch_linux;
     /* For the NetBSD code */
     struct {

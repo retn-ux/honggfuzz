@@ -237,8 +237,11 @@ bool files_resetFile(int fd, size_t sz) {
 /*
  * Reads symbols from src file (one per line) and append them to filterList. The
  * total number of added symbols is returned.
- *
+ * 
  * Simple wildcard strings are also supported (e.g. mem*)
+ *
+ * 从src文件中读取符号(每行一个)，并将它们附加到filterList。返回所添加的符号的总数。
+ * 也支持简单的通配符字符串(例如mem*)
  */
 size_t files_parseSymbolFilter(const char* srcFile, char*** filterList) {
     FILE* f = fopen(srcFile, "rb");
@@ -334,7 +337,13 @@ int files_getTmpMapFlags(int flag, bool nocore) {
     }
     return flag;
 }
-
+//
+//@brief:创建内存映射文件
+//@sz[in]:文件大小
+//@name[in]:文件名称
+//@exportmap[in]:是否导出创建的内存映射文件，为false时创建匿名内存映射文件
+//@return:文件描述符,失败返回-1
+//
 int files_createSharedMem(size_t sz, const char* name, bool exportmap) {
     int fd = -1;
 
@@ -349,6 +358,13 @@ int files_createSharedMem(size_t sz, const char* name, bool exportmap) {
 
 #if defined(_HF_ARCH_LINUX)
     if (fd == -1) {
+		/* memfd_create()会创建一个匿名文件并返回一个指向这个文件的文件描述符．
+		 * 这个文件就像是一个普通文件一样，所以能够被修改，截断，内存映射等等．
+		 * 不同于一般文件，此文件是保存在RAM中.一旦所有指向这个文件的连接丢失，
+		 * 那么这个文件就会自动被释放．匿名内存用于此文件的所有的后备存储．
+		 * 所以通过memfd_create()创建的匿名文件和通过mmap以MAP_ANONYMOUS的flag创建
+		 * 的匿名文件具有相同的语义．
+		 */
         fd = syscall(__NR_memfd_create, name, (uintptr_t)(MFD_CLOEXEC));
     }
 #endif /* defined(_HF_ARCH_LINUX) */
@@ -379,7 +395,7 @@ int files_createSharedMem(size_t sz, const char* name, bool exportmap) {
     }
 #endif /* !defined(_HF_ARCH_DARWIN) && !defined(__ANDROID__) */
 
-    /* As the last resort, create a file in /tmp */
+    /* As the last resort, create a file in /tmp 作为最后的手段，在/tmp目录下创建一个文件*/
     if (fd == -1) {
         char template[PATH_MAX];
         snprintf(template, sizeof(template), "/tmp/%s.XXXXXX", name);
@@ -399,6 +415,15 @@ int files_createSharedMem(size_t sz, const char* name, bool exportmap) {
     return fd;
 }
 
+//
+//@biref:创建映射文件并映射到共享内存
+//@sz[in]:honggfuzz全局信息结构体
+//@fd[out]:映射文件描述符
+//@name[in]:文件名称
+//@nocore[in]:是否将此区域从核心文件中排除
+//@exportmap[in]:是否导出创建的内存映射文件，为false时创建匿名内存映射文件
+//@return:成功返回文件的内存地址，失败返回NULL
+//
 void* files_mapSharedMem(size_t sz, int* fd, const char* name, bool nocore, bool exportmap) {
     *fd = files_createSharedMem(sz, name, exportmap);
     if (*fd == -1) {
@@ -413,6 +438,7 @@ void* files_mapSharedMem(size_t sz, int* fd, const char* name, bool nocore, bool
         close(*fd);
         return NULL;
     }
+	//希望以连续的方式访问内存
     if (posix_madvise(ret, sz, POSIX_MADV_RANDOM) == -1) {
         PLOG_W("posix_madvise(sz=%zu, POSIX_MADV_RANDOM)", sz);
     }

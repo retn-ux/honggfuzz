@@ -58,7 +58,7 @@ void input_setSize(run_t* run, size_t sz) {
 #endif /* !defined(__CYGWIN__) && !defined(_HF_ARCH_DARWIN) */
     run->dynfile->size = sz;
 }
-
+//获取所有测试用例并验证其大小
 bool input_getDirStatsAndRewind(honggfuzz_t* hfuzz) {
     rewinddir(hfuzz->io.inputDirPtr);
 
@@ -164,6 +164,11 @@ bool input_getNext(run_t* run, char fname[PATH_MAX], bool rewind) {
     }
 }
 
+//
+//@brief:检查测试目录以及测试文件
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@return:成功返回true
+//
 bool input_init(honggfuzz_t* hfuzz) {
     hfuzz->io.fileCnt = 0U;
 
@@ -191,6 +196,11 @@ bool input_init(honggfuzz_t* hfuzz) {
     return true;
 }
 
+//
+//@brief:解析语法字典文件
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@return:成功返回true
+//
 bool input_parseDictionary(honggfuzz_t* hfuzz) {
     LOG_I("Parsing dictionary file '%s'", hfuzz->mutate.dictionaryFile);
 
@@ -213,6 +223,7 @@ bool input_parseDictionary(honggfuzz_t* hfuzz) {
         if (len == -1) {
             break;
         }
+		//检查字典中可容纳的语法是否到最大值
         if (hfuzz->mutate.dictionaryCnt == ARRAYSIZE(hfuzz->mutate.dictionary)) {
             LOG_W("Maximum number of dictionary entries '%zu' alread loaded. Skipping the rest",
                 ARRAYSIZE(hfuzz->mutate.dictionary));
@@ -265,6 +276,11 @@ bool input_parseDictionary(honggfuzz_t* hfuzz) {
     return true;
 }
 
+//
+//@brief:解析黑名单文件
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@return:成功返回true
+//
 bool input_parseBlacklist(honggfuzz_t* hfuzz) {
     FILE* fBl = fopen(hfuzz->feedback.blocklistFile, "rb");
     if (fBl == NULL) {
