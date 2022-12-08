@@ -61,7 +61,12 @@
     "handle_sigill=0:"                                                                             \
     "handle_sigfpe=0:"                                                                             \
     "abort_on_error=1"
-
+//
+//@brief:如果启用了地址消杀器,则添加地址消杀器环境变量
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@env:环境变量
+//@val:环境变量值
+//
 static void sanitizers_AddFlag(honggfuzz_t* hfuzz, const char* env, const char* val) {
     if (getenv(env)) {
         LOG_W("The '%s' envar is already set. Not overriding it!", env);
@@ -79,6 +84,8 @@ static void sanitizers_AddFlag(honggfuzz_t* hfuzz, const char* env, const char* 
      * It will make ASAN to start background thread to check RSS mem use, which
      * will prevent the NetDrvier from using unshare(CLONE_NEWNET), which cannot
      * be used in multi-threaded contexts
+     * 它将使 ASAN 启动后台线程来检查 RSS 内存使用情况，
+     * 这将防止 NetDrvier 使用 unshare(CLONE_NEWNET)，它不能在多线程上下文中使用
      */
     if (!hfuzz->exe.netDriver && hfuzz->exe.rssLimit) {
         util_ssnprintf(buf, sizeof(buf), ":soft_rss_limit_mb=%" PRId64, hfuzz->exe.rssLimit);
@@ -87,7 +94,10 @@ static void sanitizers_AddFlag(honggfuzz_t* hfuzz, const char* env, const char* 
     cmdlineAddEnv(hfuzz, buf);
     LOG_D("%s", buf);
 }
-
+//
+//@brief:如果启用了地址消杀器则为其添加环境变量
+//@return:成功则返回true
+//
 bool sanitizers_Init(honggfuzz_t* hfuzz) {
     sanitizers_AddFlag(hfuzz, "ASAN_OPTIONS", kASAN_OPTS);
     sanitizers_AddFlag(hfuzz, "UBSAN_OPTIONS", kUBSAN_OPTS);

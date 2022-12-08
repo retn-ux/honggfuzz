@@ -548,6 +548,17 @@ void subproc_checkTermination(run_t* run) {
     }
 }
 
+//
+//@brief:启动一个子线程
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@thread[out]:线程结构体
+//@thread_func[in]:线程函数
+//@joinable:当为true时线程是joinable的，为false时线程时detached的
+//			一个可结合的线程能够被其他线程收回其资源和杀死；在被其他线程回收之前，
+//	它的存储器资源（如栈）是不释放的
+//			一个分离的线程是不能被其他线程回收或杀死的，它的存储器资源在它终止时由系统自动释放。
+//@return:成功返回true
+//
 bool subproc_runThread(
     honggfuzz_t* hfuzz, pthread_t* thread, void* (*thread_func)(void*), bool joinable) {
     pthread_attr_t attr;

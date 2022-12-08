@@ -138,7 +138,7 @@ typedef struct {
 typedef enum {
     _HF_STATE_UNSET = 0,
     _HF_STATE_STATIC,
-    _HF_STATE_DYNAMIC_DRY_RUN,
+    _HF_STATE_DYNAMIC_DRY_RUN,			//试运行状态
     _HF_STATE_DYNAMIC_MAIN,
     _HF_STATE_DYNAMIC_MINIMIZE,
 } fuzzState_t;
@@ -153,12 +153,12 @@ struct _dynfile_t {
     size_t             size;
     uint64_t           cov[4];
     size_t             idx;
-    int                fd;
+    int                fd;				//测试用例文件描述符
     uint64_t           timeExecUSecs;
     char               path[PATH_MAX];
     struct _dynfile_t* src;
     uint32_t           refs;
-    uint8_t*           data;
+    uint8_t*           data;			//测试用例数据起始地址
     TAILQ_ENTRY(_dynfile_t) pointers;
 };
 
@@ -195,7 +195,7 @@ typedef struct {
     struct {
         size_t    threadsMax;					//并发模糊测试线程数（默认值：CPU 数 / 2）
         size_t    threadsFinished;
-        uint32_t  threadsActiveCnt;
+        uint32_t  threadsActiveCnt;				//当前运行的线程个数
         pthread_t mainThread;
         pid_t     mainPid;
         uint32_t  pinThreadToCPUs;				//将单个执行线程分配到多个连续的 CPU（默认值：0 = 没有 CPU 分配）
@@ -285,7 +285,7 @@ typedef struct {
         bool del_report;					//是否禁用地址消杀器报告
     } sanitizer;
     struct {
-        fuzzState_t     state;
+        fuzzState_t     state;				//honggfuzz当前运行状态
         feedback_t*     covFeedbackMap;
         int             covFeedbackFd;
         cmpfeedback_t*  cmpFeedbackMap;
@@ -359,7 +359,7 @@ typedef enum {
 } runState_t;
 
 typedef struct {
-    honggfuzz_t* global;
+    honggfuzz_t* global;						//honggfuzz全局信息结构体
     pid_t        pid;
     int64_t      timeStartedUSecs;
     char         crashFileName[PATH_MAX];
@@ -370,9 +370,9 @@ typedef struct {
     char         report[_HF_REPORT_SIZE];
     bool         mainWorker;
     unsigned     mutationsPerRun;
-    dynfile_t*   dynfile;
+    dynfile_t*   dynfile;						//测试用例结构体
     bool         staticFileTryMore;
-    uint32_t     fuzzNo;
+    uint32_t     fuzzNo;						//线程索引
     int          persistentSock;
     runState_t   runState;
     bool         tmOutSignaled;

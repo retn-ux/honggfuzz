@@ -86,6 +86,12 @@ void util_ParentDeathSigIfAvail(int signo HF_ATTR_UNUSED) {
 #endif /* defined(_HF_ARCH_LINUX) */
 }
 
+//
+//@brief:将单个执行线程分配到多个连续的 CPU
+//@threadno[in]:线程索引
+//@cpucnt[in]:cpu个数
+//@return:成功返回true
+//
 bool util_PinThreadToCPUs(uint32_t threadno, uint32_t cpucnt) {
     if (cpucnt == 0) {
         return true;

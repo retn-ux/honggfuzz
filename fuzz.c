@@ -470,7 +470,11 @@ static void fuzz_fuzzLoopSocket(run_t* run) {
     report_saveReport(run);
 }
 
-//fuzz主线程
+//
+//@brief:fuzz线程
+//@arg[in,out]:honggfuzz全局信息结构体
+//@return:
+//
 static void* fuzz_threadNew(void* arg) {
     honggfuzz_t* hfuzz  = (honggfuzz_t*)arg;
     unsigned int fuzzNo = ATOMIC_POST_INC(hfuzz->threads.threadsActiveCnt);
@@ -491,6 +495,7 @@ static void* fuzz_threadNew(void* arg) {
     };
 
     /* Do not try to handle input files with socketfuzzer */
+	/* 不尝试处理socketfuzzer的输入文件 */
     char mapname[32];
     snprintf(mapname, sizeof(mapname), "hf-%u-input", fuzzNo);
     if (!hfuzz->socketFuzzer.enabled) {
@@ -565,6 +570,10 @@ static void* fuzz_threadNew(void* arg) {
     return NULL;
 }
 
+//
+//@brief:启动fuzz线程
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//
 void fuzz_threadsStart(honggfuzz_t* hfuzz) {
     if (!arch_archInit(hfuzz)) {
         LOG_F("Couldn't prepare arch for fuzzing");
@@ -575,6 +584,7 @@ void fuzz_threadsStart(honggfuzz_t* hfuzz) {
 
     if (hfuzz->socketFuzzer.enabled) {
         /* Don't do dry run with socketFuzzer */
+		/* socketFuzzer不需要试运行 */
         LOG_I("Entering phase - Feedback Driven Mode (SocketFuzzer)");
         hfuzz->feedback.state = _HF_STATE_DYNAMIC_MAIN;
     } else if (hfuzz->feedback.dynFileMethod != _HF_DYNFILE_NONE) {

@@ -278,7 +278,13 @@ void arch_reapChild(run_t* run) {
 void arch_reapKill(void) {
 }
 
-bool arch_archInit(honggfuzz_t* hfuzz) {
+//
+//@brief:打开被测文件，根据glibc/libc选择使用clone还是fork创建子进程
+//		设置运行模式
+//@hfuzz[in,out]:honggfuzz全局信息结构体
+//@return:成功返回true
+//
+bool arch_arcxhInit(honggfuzz_t* hfuzz) {
     /* Make %'d work */
     setlocale(LC_NUMERIC, "en_US.UTF-8");
 
