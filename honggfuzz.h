@@ -301,7 +301,7 @@ typedef struct {
         hwcnt_t         hwCnts;
     } feedback;
     struct {
-        size_t mutationsCnt;
+        size_t mutationsCnt;					//当前突变次数
         size_t crashesCnt;
         size_t uniqueCrashesCnt;
         size_t verifiedCrashesCnt;
@@ -377,7 +377,7 @@ typedef struct {
     runState_t   runState;
     bool         tmOutSignaled;
     char*        args[_HF_ARGS_MAX + 1];
-    int          perThreadCovFeedbackFd;
+    int          perThreadCovFeedbackFd;		//线程覆盖率文件
     unsigned     triesLeft;
     dynfile_t*   current;
 #if !defined(_HF_ARCH_DARWIN)

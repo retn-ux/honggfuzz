@@ -529,6 +529,7 @@ static void* fuzz_threadNew(void* arg) {
 
     for (;;) {
         /* Check if dry run mode with verifier enabled */
+		/* 检查试运行模式是否启用验证器 */
         if (run.global->mutate.mutationsPerRun == 0U && run.global->cfg.useVerifier &&
             !hfuzz->socketFuzzer.enabled) {
             if (ATOMIC_POST_INC(run.global->cnts.mutationsCnt) >= run.global->io.fileCnt) {
@@ -536,6 +537,7 @@ static void* fuzz_threadNew(void* arg) {
             }
         }
         /* Check for max iterations limit if set */
+		/* 检查是否设置了最大迭代次数限制 */
         else if ((ATOMIC_POST_INC(run.global->cnts.mutationsCnt) >=
                      run.global->mutate.mutationsMax) &&
                  run.global->mutate.mutationsMax) {
