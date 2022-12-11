@@ -75,7 +75,11 @@ bool fuzz_shouldTerminate() {
     }
     return false;
 }
-
+//
+//@brief:获取honggfuzz的当前运行状态
+//@hfuzz:honggfuzz全局信息结构体
+//@return:当前honggfuzz当前运行状态
+//
 fuzzState_t fuzz_getState(honggfuzz_t* hfuzz) {
     return ATOMIC_GET(hfuzz->feedback.state);
 }

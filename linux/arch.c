@@ -128,6 +128,7 @@ bool arch_launchChild(run_t* run) {
     }
 
     /* Kill rocess which corrupts its own heap (with ABRT) */
+	/* 销毁自己堆的进程(使用ABRT) */
     if (setenv("MALLOC_CHECK_", "7", 0) == -1) {
         PLOG_E("setenv(MALLOC_CHECK_=7) failed");
         return false;
@@ -138,6 +139,7 @@ bool arch_launchChild(run_t* run) {
     }
 
     /* Increase our OOM score, so fuzzed processes die faster */
+	/* 提高我们的OOM分数，这样模糊化进程就会死得更快 */
     if (!files_writeStrToFile("/proc/self/oom_score_adj", "+500", O_WRONLY)) {
         LOG_W("Couldn't increase our oom_score");
     }

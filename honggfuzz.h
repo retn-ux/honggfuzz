@@ -150,7 +150,7 @@ typedef enum {
 } tristate_t;
 
 struct _dynfile_t {
-    size_t             size;
+    size_t             size;			//测试用例当前大小
     uint64_t           cov[4];
     size_t             idx;
     int                fd;				//测试用例文件描述符
@@ -287,7 +287,7 @@ typedef struct {
     struct {
         fuzzState_t     state;				//honggfuzz当前运行状态
         feedback_t*     covFeedbackMap;
-        int             covFeedbackFd;
+        int             covFeedbackFd;		//覆盖率文件结构体
         cmpfeedback_t*  cmpFeedbackMap;
         int             cmpFeedbackFd;
         bool            cmpFeedback;		//??使用模糊程序中的常量整数/字符串值通过动态字典来破坏输入文件(默认值:true)

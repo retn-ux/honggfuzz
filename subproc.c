@@ -189,6 +189,7 @@ static void subproc_prepareExecvArgs(run_t* run) {
     size_t x = 0;
     for (x = 0; x < _HF_ARGS_MAX && x < (size_t)run->global->exe.argc; x++) {
         const char* ph_str = strstr(run->global->exe.cmdline[x], _HF_FILE_PLACEHOLDER);
+		//判断是否为文件fuzz
         if (!strcmp(run->global->exe.cmdline[x], _HF_FILE_PLACEHOLDER)) {
             run->args[x] = _HF_INPUT_FILE_PATH;
         } else if (ph_str) {
@@ -209,6 +210,7 @@ static bool subproc_PrepareExecv(run_t* run) {
 
     /*
      * The address space limit. If big enough - roughly the size of RAM used
+     * 地址空间限制。如果足够大——大约是使用的RAM的大小
      */
 #ifdef RLIMIT_AS
     if (run->global->exe.asLimit) {

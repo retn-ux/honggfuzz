@@ -42,7 +42,11 @@
 #include "libhfcommon/util.h"
 #include "mangle.h"
 #include "subproc.h"
-
+//
+//@brief:设置运行模式下测试用例大小
+//@run:honggfuzz运行时结构体
+//@sz:将要设置的测试用例的大小													
+//
 void input_setSize(run_t* run, size_t sz) {
     if (run->dynfile->size == sz) {
         return;
@@ -51,6 +55,7 @@ void input_setSize(run_t* run, size_t sz) {
         PLOG_F("Too large size requested: %zu > maxSize: %zu", sz, run->global->mutate.maxInputSz);
     }
     /* ftruncate of a mmaped file fails under CygWin, it's also painfully slow under MacOS X */
+	/* 在CygWin下，mmapping文件的ftruncate会失败，在MacOS X下也非常慢 */
 #if !defined(__CYGWIN__) && !defined(_HF_ARCH_DARWIN)
     if (TEMP_FAILURE_RETRY(ftruncate(run->dynfile->fd, sz)) == -1) {
         PLOG_W("ftruncate(run->dynfile->fd=%d, sz=%zu)", run->dynfile->fd, sz);
@@ -620,6 +625,11 @@ const uint8_t* input_getRandomInputAsBuf(run_t* run, size_t* len) {
     return current->data;
 }
 
+//
+//@brief:
+//@run:
+//@return:
+//
 static bool input_shouldReadNewFile(run_t* run) {
     if (fuzz_getState(run->global) != _HF_STATE_DYNAMIC_DRY_RUN) {
         input_setSize(run, run->global->mutate.maxInputSz);
@@ -635,6 +645,7 @@ static bool input_shouldReadNewFile(run_t* run) {
     }
 
     /* Increase size of the current file by a factor of 2, and return it instead of a new file */
+	/* 将当前文件的大小增加2倍，并返回它而不是一个新文件 */
     size_t newsz = run->dynfile->size * 2;
     if (newsz >= run->global->mutate.maxInputSz) {
         /* That's the largest size for this specific file that will be ever used */
@@ -646,6 +657,13 @@ static bool input_shouldReadNewFile(run_t* run) {
     return false;
 }
 
+//
+//@brief:
+//@run:
+//@rewind:
+//@needs_mangle:
+//@return:
+//
 bool input_prepareStaticFile(run_t* run, bool rewind, bool needs_mangle) {
     if (input_shouldReadNewFile(run)) {
         for (;;) {
