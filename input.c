@@ -127,6 +127,14 @@ bool input_getDirStatsAndRewind(honggfuzz_t* hfuzz) {
     return true;
 }
 
+
+//
+//@brief:获取input_dir目录中的测试用例
+//@run[in]:honggfuzz运行时结构体
+//@fname[out]:input_dir中的测试文件路径
+//@rewind[in]:从目录开始位置读取
+//@return:成功返回ture
+//
 bool input_getNext(run_t* run, char fname[PATH_MAX], bool rewind) {
     MX_SCOPED_LOCK(&run->global->mutex.input);
 
@@ -626,9 +634,9 @@ const uint8_t* input_getRandomInputAsBuf(run_t* run, size_t* len) {
 }
 
 //
-//@brief:
-//@run:
-//@return:
+//@brief:设置应读取的新文件大小
+//@run:honggfuzz运行时结构体
+//@return:成功返回true
 //
 static bool input_shouldReadNewFile(run_t* run) {
     if (fuzz_getState(run->global) != _HF_STATE_DYNAMIC_DRY_RUN) {
@@ -649,6 +657,7 @@ static bool input_shouldReadNewFile(run_t* run) {
     size_t newsz = run->dynfile->size * 2;
     if (newsz >= run->global->mutate.maxInputSz) {
         /* That's the largest size for this specific file that will be ever used */
+		/* 这是这个特定文件将使用的最大大小 */
         newsz                  = run->global->mutate.maxInputSz;
         run->staticFileTryMore = false;
     }
@@ -659,9 +668,9 @@ static bool input_shouldReadNewFile(run_t* run) {
 
 //
 //@brief:
-//@run:
-//@rewind:
-//@needs_mangle:
+//@run[in]:
+//@rewind[in]:
+//@needs_mangle[in]:
 //@return:
 //
 bool input_prepareStaticFile(run_t* run, bool rewind, bool needs_mangle) {

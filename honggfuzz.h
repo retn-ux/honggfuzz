@@ -155,7 +155,7 @@ struct _dynfile_t {
     size_t             idx;
     int                fd;				//测试用例文件描述符
     uint64_t           timeExecUSecs;
-    char               path[PATH_MAX];
+    char               path[PATH_MAX];	//当前测试文件路径
     struct _dynfile_t* src;
     uint32_t           refs;
     uint8_t*           data;			//测试用例数据起始地址
