@@ -413,10 +413,10 @@ void display_display(honggfuzz_t* hfuzz) {
             ATOMIC_GET(hfuzz->feedback.hwCnts.bbCnt));
     }
     if (hfuzz->feedback.dynFileMethod & _HF_DYNFILE_SOFT) {
-        uint64_t softCntPc   = ATOMIC_GET(hfuzz->feedback.hwCnts.softCntPc);
-        uint64_t softCntEdge = ATOMIC_GET(hfuzz->feedback.hwCnts.softCntEdge);
-        uint64_t softCntCmp  = ATOMIC_GET(hfuzz->feedback.hwCnts.softCntCmp);
-        uint64_t guardNb     = ATOMIC_GET(hfuzz->feedback.covFeedbackMap->guardNb);
+        uint64_t softCntPc   	= ATOMIC_GET(hfuzz->feedback.hwCnts.softCntPc);
+        uint64_t softCntEdge 	= ATOMIC_GET(hfuzz->feedback.hwCnts.softCntEdge);
+        uint64_t softCntCmp  	= ATOMIC_GET(hfuzz->feedback.hwCnts.softCntCmp);
+        uint64_t guardNb     	= ATOMIC_GET(hfuzz->feedback.covFeedbackMap->guardNb);
         display_put(" edge: " ESC_BOLD "%" _HF_NONMON_SEP PRIu64 ESC_RESET "/"
                     "%" _HF_NONMON_SEP                           PRIu64 " [%" PRId64 "%%]",
             softCntEdge, guardNb, guardNb ? ((softCntEdge * 100) / guardNb) : 0);

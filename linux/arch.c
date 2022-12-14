@@ -286,7 +286,7 @@ void arch_reapKill(void) {
 //@hfuzz[in,out]:honggfuzz全局信息结构体
 //@return:成功返回true
 //
-bool arch_arcxhInit(honggfuzz_t* hfuzz) {
+bool arch_archInit(honggfuzz_t* hfuzz) {
     /* Make %'d work */
     setlocale(LC_NUMERIC, "en_US.UTF-8");
 
