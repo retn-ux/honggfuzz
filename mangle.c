@@ -49,6 +49,8 @@ static inline size_t mangle_LenLeft(run_t* run, size_t off) {
 /*
  * Get a random value <1:max>, but prefer smaller ones
  * Based on an idea by https://twitter.com/gamozolabs
+ * 获得一个随机值<1:最大>，
+ * 但更喜欢小的基于https://twitter.com/gamozolabs的想法
  */
 static inline size_t mangle_getLen(size_t max) {
     if (max > _HF_INPUT_MAX_SIZE) {
@@ -62,20 +64,24 @@ static inline size_t mangle_getLen(size_t max) {
     }
 
     /* Give 50% chance the the uniform distribution */
+	/* 均匀分布的概率是50% */
     if (util_rnd64() & 1) {
         return (size_t)util_rndGet(1, max);
     }
 
     /* effectively exprand() */
+	/* 有效exprand() */
     return (size_t)util_rndGet(1, util_rndGet(1, max));
 }
 
 /* Prefer smaller values here, so use mangle_getLen() */
+/* 此处更喜欢较小的值，因此使用mangle_getLen() */
 static inline size_t mangle_getOffSet(run_t* run) {
     return mangle_getLen(run->dynfile->size) - 1;
 }
 
 /* Offset which can be equal to the file size */
+/* 偏移量，可以等于文件大小 */
 static inline size_t mangle_getOffSetPlus1(run_t* run) {
     size_t reqlen = HF_MIN(run->dynfile->size + 1, _HF_INPUT_MAX_SIZE);
     return mangle_getLen(reqlen) - 1;
