@@ -350,7 +350,8 @@ int main(int argc, char** argv) {
         PLOG_F("Output directory '%s' is not writeable", hfuzz.io.outputDir);
     }
     if (hfuzz.cfg.minimize) {
-        LOG_I("Minimization mode enabled. Setting number of threads to 1");	//最小化模式启用。设置线程数为1
+		//最小化模式启用。设置线程数为1
+        LOG_I("Minimization mode enabled. Setting number of threads to 1");	
         hfuzz.threads.threadsMax = 1;
     }
 	

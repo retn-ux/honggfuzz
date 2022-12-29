@@ -128,11 +128,11 @@ typedef enum {
 typedef struct {
     uint64_t cpuInstrCnt;
     uint64_t cpuBranchCnt;
-    uint64_t bbCnt;
     uint64_t newBBCnt;
-    uint64_t softCntPc;
-    uint64_t softCntEdge;
-    uint64_t softCntCmp;
+    uint64_t bbCnt;
+    uint64_t softCntPc;                 //当前的BB数
+    uint64_t softCntEdge;               //当前的边界数
+    uint64_t softCntCmp;                //当前的分支数
 } hwcnt_t;
 
 typedef enum {
